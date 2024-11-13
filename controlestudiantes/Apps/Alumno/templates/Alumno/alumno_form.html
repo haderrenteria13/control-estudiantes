@@ -1,0 +1,31 @@
+{% extends 'Alumno/base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table">
+                <thead class="thead">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Edad</th>
+                        <th>Sexo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for itemalumno in valumno %}
+                        <tr>
+                            <td>{{ itemalumno.nombre }}</td>
+                            <td>{{ itemalumno.apellido }}</td>
+                            <td>{{ itemalumno.edad }}</td>
+                            <td>{{ itemalumno.sexo }}</td>
+                            <td>{{ itemalumno.fecha_nacimiento }}</td>
+                            <td>{{ itemalumno.genero }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
