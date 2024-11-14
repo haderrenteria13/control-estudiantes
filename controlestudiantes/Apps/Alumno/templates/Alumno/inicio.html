@@ -1,6 +1,17 @@
 {% extends 'Alumno/base.html' %}
 
 {% block content %}
+    <a class="btn btn-primary" href="{% url "alumno_new" %}">+ Agregar Alumnos</a>
+    <h1 class="my-4">
+        <small>Lista de Alumnos</small>
+    </h1>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
     <div class="row">
         <div class="col-md-12">
             <table class="table">
@@ -20,8 +31,10 @@
                             <td>{{ itemalumno.apellido }}</td>
                             <td>{{ itemalumno.edad }}</td>
                             <td>{{ itemalumno.sexo }}</td>
-                            <td>{{ itemalumno.fecha_nacimiento }}</td>
-                            <td>{{ itemalumno.genero }}</td>
+                            <td>
+                                <a href="{% url 'alumno_update' itemalumno.id %}"><button class="btn btn-warning">Editar</button></a>
+                                <a href="{% url 'alumno_delete' itemalumno.id %}"><button class="btn btn-danger">Eliminar</button></a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

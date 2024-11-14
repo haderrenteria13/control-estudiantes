@@ -1,5 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Alummno # Importamos el modelo Alumno
+from .form import AlumnoForm # Importamos el formulario Alumno
+
 
 # Create your views here.
 def inicio(request): # Función que representa la vista inicio
@@ -29,3 +31,9 @@ def alumno_update(request, id):
     else:
         alumno_form = AlumnoForm(instance=alummno)
     return render(request, 'Alumno/alumno_form.html', {'alumno_form': alumno_form})
+
+def alumno_delete(request, id):
+    alummno = get_object_or_404(Alummno, id=id)
+    if alummno:
+        alummno.delete()
+    return redirect ('inicio')

@@ -1,31 +1,24 @@
 {% extends 'Alumno/base.html' %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table">
-                <thead class="thead">
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Edad</th>
-                        <th>Sexo</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for itemalumno in valumno %}
-                        <tr>
-                            <td>{{ itemalumno.nombre }}</td>
-                            <td>{{ itemalumno.apellido }}</td>
-                            <td>{{ itemalumno.edad }}</td>
-                            <td>{{ itemalumno.sexo }}</td>
-                            <td>{{ itemalumno.fecha_nacimiento }}</td>
-                            <td>{{ itemalumno.genero }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <h1 class="my-4">{% if request.path == '/new' %} Agregar Alumno {% else %} Edit - {% endif %} 
+        {% if request.path != '/new' %}<small>{{ alumno.nombre }}</small> {% endif %}
+    </h1> <!-- Aqui se muestra el nombre del alumno que se esta editando -->
+    <div class="row"> 
+        <div class="col-md-6">
+            <form method="POST"> <!-- Se muestra el el metodo del formulario es de tipo POST -->
+                {% csrf_token %} <!-- Carga todos los formularios por token -->
+                {% for field in alumno_form %} <!-- Se recorre el formulario del alumno y se crea un field (input) -->
+                    <div class="form-group"> <!-- Por cada atributo que contenga el formulario se crea un input -->
+                        <label class="col-sm-2 col-form-label">{{ field.label_tag }}</label> <!-- Se crea una etiqueta para el input -->
+                        <div class="col-sm-10">
+                            {{ field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                <input type="submit" {% if request.path == '/new' %} value="Add" {% else %} value="Update" {% endif %} class="btn btn-success"> 
+                <a href="{% url 'inicio' %}"><button type="button" class="btn btn-danger">Cancel</button></a> 
+            </form>
         </div>
     </div>
 {% endblock %}
