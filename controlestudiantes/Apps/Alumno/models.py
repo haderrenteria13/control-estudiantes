@@ -6,7 +6,7 @@ class Alummno (models.Model): # Clase que representa el modelo Alumno
     apellido = models.CharField(max_length=150, blank=False) 
     edad = models.IntegerField(blank=False)  
     sexo = models.CharField(max_length=1, blank=False) 
-    
-    
+    telefono = models.CharField(max_length=10, blank=True)
+
     def __str__(self): # Método que retorna el nombre y apellido del alumno
-        return self.nombre + ' ' + self.apellido + ' ' + str(self.edad) + ' ' + self.sexo # Retornamos el nombre y apellido del alumno
+        return self.nombre + ' ' + self.apellido + ' ' + str(self.edad) + ' ' + self.sexo + '' + self.telefono # Retornamos el nombre y apellido del alumno

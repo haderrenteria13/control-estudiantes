@@ -1,39 +1,42 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Alummno # Importamos el modelo Alumno
-from .form import AlumnoForm # Importamos el formulario Alumno
+from django.contrib.auth.decorators import login_required
+from .models import Alummno
+from .form import AlumnoForm
 
-
-# Create your views here.
-def inicio(request): # Función que representa la vista inicio
-    alumno = Alummno.objects.all() # Consultamos todos los alumnos
+@login_required
+def inicio(request):
+    alumno = Alummno.objects.all()
     context = {
-        'valumno': alumno # Enviamos los alumnos a la plantilla
+        'valumno': alumno
     }
-    return render(request, 'Alumno/inicio.html', context) # Retornamos la plantilla inicio.html con los alumnos
+    return render(request, 'Alumno/inicio.html', context)
 
-def alumno_new(request): 
+@login_required
+def alumno_new(request):
     if request.method == 'POST':
         alumno_form = AlumnoForm(request.POST)
         if alumno_form.is_valid():
             alumno_form.save()
-            return redirect ('inicio')
+            return redirect('inicio')
     else:
         alumno_form = AlumnoForm()
     return render(request, 'Alumno/alumno_form.html', {'alumno_form': alumno_form})
 
-def alumno_update(request, id): 
+@login_required
+def alumno_update(request, id):
     alummno = get_object_or_404(Alummno, id=id)
     if request.method == 'POST':
         alumno_form = AlumnoForm(request.POST, instance=alummno)
         if alumno_form.is_valid():
             alumno_form.save()
-            return redirect ('inicio')
+            return redirect('inicio')
     else:
         alumno_form = AlumnoForm(instance=alummno)
     return render(request, 'Alumno/alumno_form.html', {'alumno_form': alumno_form})
 
+@login_required
 def alumno_delete(request, id):
     alummno = get_object_or_404(Alummno, id=id)
     if alummno:
         alummno.delete()
-    return redirect ('inicio')
+    return redirect('inicio')
