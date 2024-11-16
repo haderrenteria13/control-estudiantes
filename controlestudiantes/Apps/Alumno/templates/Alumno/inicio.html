@@ -1,39 +1,38 @@
 {% extends 'Alumno/base.html' %}
 
 {% block content %}
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="fw-bold my-4">Lista de Estudiantes</h1>
-    </div>
-
-    <div class="col">
-        <table class="table">
-            <thead>
+    <h1 class="my-4">Lista de Alumnos</h1>
+    <form method="GET" action="{% url 'inicio' %}">
+        <div class="input-group" style="max-width: 500px;">
+            <input type="text" name="q" class="form-control" placeholder="Buscar por nombre o apellido" value="{{ query | default_if_none:'' }}">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+    </form>
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Edad</th>
+                <th>Sexo</th>
+                <th>Teléfono</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for alumno in valumno %}
                 <tr>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Edad</th>
-                    <th>Sexo</th>
-                    <th>Telefono</th>
-                    <th>Acciones</th>
+                    <td>{{ alumno.nombre }}</td>
+                    <td>{{ alumno.apellido }}</td>
+                    <td>{{ alumno.edad }}</td>
+                    <td>{{ alumno.sexo }}</td>
+                    <td>{{ alumno.telefono }}</td>
+                    <td>
+                        <a href="{% url 'alumno_update' alumno.id %}" class="btn btn-warning">Editar</a>
+                        <a href="{% url 'alumno_delete' alumno.id %}" class="btn btn-danger">Eliminar</a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for itemalumno in valumno %}
-                    <tr>
-                        <td>{{ itemalumno.nombre }}</td>
-                        <td>{{ itemalumno.apellido }}</td>
-                        <td>{{ itemalumno.edad }}</td>
-                        <td>{{ itemalumno.sexo }}</td>
-                        <td>{{ itemalumno.telefono }}</td>
-                        <td>
-                            <a href="{% url 'alumno_update' itemalumno.id %}"><button class="btn btn-warning">Editar</button></a>
-                            <a href="{% url 'alumno_delete' itemalumno.id %}"><button class="btn btn-danger">Eliminar</button></a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

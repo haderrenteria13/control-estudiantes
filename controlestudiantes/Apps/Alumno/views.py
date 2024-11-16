@@ -5,9 +5,14 @@ from .form import AlumnoForm
 
 @login_required
 def inicio(request):
-    alumno = Alummno.objects.all()
+    query = request.GET.get('q')
+    if query:
+        alumnos = Alummno.objects.filter(nombre__icontains=query) | Alummno.objects.filter(apellido__icontains=query) | Alummno.objects.filter(edad__icontains=query) | Alummno.objects.filter(sexo__icontains=query) | Alummno.objects.filter(telefono__icontains=query)
+    else:
+        alumnos = Alummno.objects.all()
     context = {
-        'valumno': alumno
+        'valumno': alumnos,
+        'query': query,
     }
     return render(request, 'Alumno/inicio.html', context)
 
