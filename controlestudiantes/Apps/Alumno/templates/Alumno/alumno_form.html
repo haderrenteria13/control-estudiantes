@@ -1,37 +1,14 @@
 {% extends 'Alumno/base.html' %}
-
 {% block content %}
-    <h1 class="my-2 fw-bold">
-        {% if request.path == '/new' %}
-            Agregar Alumno
-        {% else %}
-            Editar a {{ alumno_form.instance.nombre }}
-        {% endif %}
-    </h1> <!-- Aqui se muestra el nombre del alumno que se esta editando -->
-    <div class="d-flex justify-content-center align-items-center "> 
-        <div class="row container d-flex justify-content-center p-0">
-            <div class="col p-0">
-                <form method="POST"> <!-- Se muestra el el metodo del formulario es de tipo POST -->
-                    {% csrf_token %} <!-- Carga todos los formularios por token -->
-                    {% for field in alumno_form %} <!-- Se recorre el formulario del alumno y se crea un field (input) -->
-                        <div class="form-group"> <!-- Por cada atributo que contenga el formulario se crea un input -->
-                            <label class="col-sm-2 col-form-label">{{ field.label_tag }}</label> <!-- Se crea una etiqueta para el input -->
-                            <div>
-                                {{ field }}
-                                <script>
-                                    document.querySelectorAll('input, select, textarea').forEach(function(element) {
-                                        element.classList.add('form-control');
-                                    });
-                                </script>
-                            </div>
-                        </div>
-                    {% endfor %}
-                    <div class="d-grid mt-2">
-                        <input type="submit" {% if request.path == '/new' %} value="Añadir" {% else %} value="Actualizar" {% endif %} class="btn btn-success mb-2"> 
-                        <a href="{% url 'inicio' %}" class="d-grid"><button type="button" class="btn btn-danger">Cancelar</button></a> 
-                    </div>
-                </form>
+    <h1 class="my-4">Agregar Alumno</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ alumno_form.as_p }}
+        {% if alumno_form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ alumno_form.non_field_errors }}
             </div>
-        </div>
-    </div>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Guardar Alumno</button>
+    </form>
 {% endblock %}
