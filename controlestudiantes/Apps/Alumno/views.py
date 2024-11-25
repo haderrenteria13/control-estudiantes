@@ -8,28 +8,20 @@ from django.db.models import Q
 def inicio(request):
     query = request.GET.get('q')
     if query:
-        alumnos_primaria = EstudiantePrimaria.objects.filter(
-            Q(nombre__icontains=query) | 
-            Q(apellido__icontains=query) | 
-            Q(edad__icontains=query) | 
-            Q(sexo__icontains=query) | 
-            Q(telefono__icontains=query)
-        ).values('id', 'nombre', 'apellido', 'edad', 'sexo', 'telefono', 'grado', 'jornada', 'pae', 'transporte', 'etapa')
-        alumnos_secundaria = EstudianteSecundaria.objects.filter(
-            Q(nombre__icontains=query) | 
-            Q(apellido__icontains=query) | 
-            Q(edad__icontains=query) | 
-            Q(sexo__icontains=query) | 
-            Q(telefono__icontains=query)
-        ).values('id', 'nombre', 'apellido', 'edad', 'sexo', 'telefono', 'grado', 'jornada', 'pae', 'transporte', 'etapa')
-        alumnos = alumnos_primaria.union(alumnos_secundaria)
+        estudiantes_primaria = EstudiantePrimaria.objects.filter(
+            Q(_nombre__icontains=query) | 
+            Q(_apellido__icontains=query)
+        )
+        estudiantes_secundaria = EstudianteSecundaria.objects.filter(
+            Q(_nombre__icontains=query) | 
+            Q(_apellido__icontains=query)
+        )
     else:
-        alumnos_primaria = EstudiantePrimaria.objects.all().values('id', 'nombre', 'apellido', 'edad', 'sexo', 'telefono', 'grado', 'jornada', 'pae', 'transporte', 'etapa')
-        alumnos_secundaria = EstudianteSecundaria.objects.all().values('id', 'nombre', 'apellido', 'edad', 'sexo', 'telefono', 'grado', 'jornada', 'pae', 'transporte', 'etapa')
-        alumnos = alumnos_primaria.union(alumnos_secundaria)
-    
+        estudiantes_primaria = EstudiantePrimaria.objects.all()
+        estudiantes_secundaria = EstudianteSecundaria.objects.all()
     context = {
-        'valumno': alumnos,
+        'estudiantes_primaria': estudiantes_primaria,
+        'estudiantes_secundaria': estudiantes_secundaria,
         'query': query,
     }
     return render(request, 'Alumno/inicio.html', context)
@@ -55,8 +47,8 @@ def inicio_secundaria(request):
     query = request.GET.get('q')
     if query:
         estudiantes_secundaria = EstudianteSecundaria.objects.filter(
-            Q(nombre__icontains=query) | 
-            Q(apellido__icontains=query)
+            Q(_nombre__icontains=query) | 
+            Q(_apellido__icontains=query)
         )
     else:
         estudiantes_secundaria = EstudianteSecundaria.objects.all()
@@ -72,10 +64,12 @@ def alumno_new(request):
         alumno_form = AlumnoForm(request.POST)
         if alumno_form.is_valid():
             tipo_alumno = alumno_form.cleaned_data.pop('tipo_alumno')
+            media = alumno_form.cleaned_data.pop('media', False)
+            cleaned_data = {key: value for key, value in alumno_form.cleaned_data.items()}
             if tipo_alumno == 'primaria':
-                alumno = EstudiantePrimaria(**alumno_form.cleaned_data)
+                alumno = EstudiantePrimaria.crear_estudiante(**cleaned_data)
             else:
-                alumno = EstudianteSecundaria(**alumno_form.cleaned_data)
+                alumno = EstudianteSecundaria.crear_estudiante(**cleaned_data, media=media)
             alumno.save()
             return redirect('inicio')
     else:
@@ -94,7 +88,21 @@ def alumno_update(request, id):
     if request.method == 'POST':
         alumno_form = AlumnoForm(request.POST, instance=alumno)
         if alumno_form.is_valid():
-            alumno_form.save()
+            tipo_alumno_nuevo = alumno_form.cleaned_data.pop('tipo_alumno')
+            media = alumno_form.cleaned_data.pop('media', False)
+            cleaned_data = {key: value for key, value in alumno_form.cleaned_data.items()}
+            if tipo_alumno != tipo_alumno_nuevo:
+                # Cambiar el tipo de alumno
+                if tipo_alumno_nuevo == 'primaria':
+                    alumno_nuevo = EstudiantePrimaria.crear_estudiante(**cleaned_data)
+                else:
+                    alumno_nuevo = EstudianteSecundaria.crear_estudiante(**cleaned_data, media=media)
+                alumno.delete()
+                alumno_nuevo.save()
+            else:
+                if tipo_alumno == 'secundaria':
+                    alumno.media = media
+                alumno_form.save()
             return redirect('inicio')
     else:
         alumno_form = AlumnoForm(instance=alumno)

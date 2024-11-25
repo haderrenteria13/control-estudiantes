@@ -2,11 +2,8 @@
 
 {% block content %}
     <h1 class="my-4">Lista de Alumnos</h1>
-    <form method="GET" action="{% url 'inicio' %}">
-        <div class="input-group" style="max-width: 500px;">
-            <input type="text" name="q" class="form-control" placeholder="Buscar por nombre o apellido" value="{{ query | default_if_none:'' }}">
-            <button type="submit" class="btn btn-primary">Buscar</button>
-        </div>
+    <form class="d-flex">
+        <a class="btn btn-primary shadow" href="{% url "alumno_new" %}">+ Agregar Alumnos</a>
     </form>
     <table class="table table-striped mt-4">
         <thead>
@@ -20,12 +17,12 @@
                 <th>Jornada</th>
                 <th>Pae</th>
                 <th>Transporte</th>
-                <th>Nivel Estudiantil</th>
+                <th>Nivel de Educación</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            {% for alumno in valumno %}
+            {% for alumno in estudiantes_primaria %}
                 <tr>
                     <td>{{ alumno.nombre }}</td>
                     <td>{{ alumno.apellido }}</td>
@@ -36,7 +33,25 @@
                     <td>{{ alumno.jornada }}</td>
                     <td>{{ alumno.pae }}</td>
                     <td>{{ alumno.transporte }}</td>
-
+                    <td>{{ alumno.etapa }}</td>
+                    <td>
+                        <a href="{% url 'alumno_update' alumno.id %}" class="btn btn-warning">Editar</a>
+                        <a href="{% url 'alumno_delete' alumno.id %}" class="btn btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% for alumno in estudiantes_secundaria %}
+                <tr>
+                    <td>{{ alumno.nombre }}</td>
+                    <td>{{ alumno.apellido }}</td>
+                    <td>{{ alumno.edad }}</td>
+                    <td>{{ alumno.sexo }}</td>
+                    <td>{{ alumno.telefono }}</td>
+                    <td>{{ alumno.grado }}</td>
+                    <td>{{ alumno.jornada }}</td>
+                    <td>{{ alumno.pae }}</td>
+                    <td>{{ alumno.transporte }}</td>
+                    <td>{{ alumno.etapa }}</td>
                     <td>
                         <a href="{% url 'alumno_update' alumno.id %}" class="btn btn-warning">Editar</a>
                         <a href="{% url 'alumno_delete' alumno.id %}" class="btn btn-danger">Eliminar</a>

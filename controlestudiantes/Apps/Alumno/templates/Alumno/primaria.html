@@ -1,11 +1,8 @@
 {% extends 'Alumno/base.html' %}
 {% block content %}
     <h1 class="my-4">Lista de Alumnos de Primaria</h1>
-    <form method="GET" action="{% url 'inicio_primaria' %}">
-        <div class="input-group" style="max-width: 500px;">
-            <input type="text" name="q" class="form-control" placeholder="Buscar por nombre o apellido" value="{{ query | default_if_none:'' }}">
-            <button type="submit" class="btn btn-primary">Buscar</button>
-        </div>
+    <form class="d-flex">
+        <a class="btn btn-primary shadow" href="{% url "alumno_new" %}">+ Agregar Alumnos</a>
     </form>
     <table class="table table-striped mt-4">
         <thead>
@@ -32,8 +29,8 @@
                     <td>{{ alumno.telefono }}</td>
                     <td>{{ alumno.grado }}</td>
                     <td>{{ alumno.jornada }}</td>
-                    <td>{{ alumno.pae }}</td>
-                    <td>{{ alumno.transporte }}</td>
+                    <td>{{ alumno.pae|yesno:"Sí,No" }}</td>
+                    <td>{{ alumno.transporte|yesno:"Sí,No" }}</td>
                     <td>
                         <a href="{% url 'alumno_update' alumno.id %}" class="btn btn-warning">Editar</a>
                         <a href="{% url 'alumno_delete' alumno.id %}" class="btn btn-danger">Eliminar</a>

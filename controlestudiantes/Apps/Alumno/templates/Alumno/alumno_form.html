@@ -1,6 +1,7 @@
 {% extends 'Alumno/base.html' %}
 {% block content %}
-    <h1 class="my-4">Agregar Alumno</h1>
+    {% if request.path == '/new' %} <h1>Agregar Alumno</h1> {% else %} <h1>Editar a {{ alumno_form.instance.nombre }} </h1> {% endif %}
+
     <form method="POST">
         {% csrf_token %}
         {{ alumno_form.as_p }}
