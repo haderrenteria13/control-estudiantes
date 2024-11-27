@@ -15,21 +15,48 @@ class Alumno(models.Model):
         blank=True,
         choices=[("1", "Primero"), ("2", "Segundo"), ("3", "Tercero"), ("4", "Cuarto"), ("5", "Quinto"), ("6", "Sexto"), ("7", "Séptimo"), ("8", "Octavo"), ("9", "Noveno"), ("10", "Décimo"), ("11", "Undécimo")],
     )
-
     _jornada = models.CharField(
         max_length=10,
         choices=[("mañana", "Mañana"), ("tarde", "Tarde")],
         blank=True,
     )
-    _pae = models.BooleanField(
-        default=False,                          
-    )
-    _transporte = models.BooleanField(
-        default=False,  
-    )
+    _pae = models.BooleanField(default=False)
+    _transporte = models.BooleanField(default=False)
 
     class Meta:
         abstract = True
+
+    @classmethod
+    def crear_estudiante(cls, _nombre, _apellido, _edad, _sexo, _telefono, _grado, _jornada, _pae, _transporte, media=False):
+        if _grado in ["1", "2", "3", "4", "5"]:
+            return EstudiantePrimaria(
+                _nombre=_nombre,
+                _apellido=_apellido,
+                _edad=_edad,
+                _sexo=_sexo,
+                _telefono=_telefono,
+                _grado=_grado,
+                _jornada=_jornada,
+                _pae=_pae,
+                _transporte=_transporte,
+                etapa="primaria"
+            )
+        elif _grado in ["6", "7", "8", "9", "10", "11"]:
+            return EstudianteSecundaria(
+                _nombre=_nombre,
+                _apellido=_apellido,
+                _edad=_edad,
+                _sexo=_sexo,
+                _telefono=_telefono,
+                _grado=_grado,
+                _jornada=_jornada,
+                _pae=_pae,
+                _transporte=_transporte,
+                media=media,
+                etapa="secundaria"
+            )
+        else:
+            raise ValueError("El grado no corresponde a un estudiante válido")
 
     @property
     def nombre(self):
@@ -125,23 +152,6 @@ class EstudiantePrimaria(Alumno):
     def es_primaria():
         return True
 
-    @classmethod
-    def crear_estudiante(cls, _nombre, _apellido, _edad, _sexo, _telefono, _grado, _jornada, _pae, _transporte):
-        if _grado in ["1", "2", "3", "4", "5"]:
-            return cls(
-                _nombre=_nombre,
-                _apellido=_apellido,
-                _edad=_edad,
-                _sexo=_sexo,
-                _telefono=_telefono,
-                _grado=_grado,
-                _jornada=_jornada,
-                _pae=_pae,
-                _transporte=_transporte
-            )
-        else:
-            raise ValueError("El grado no corresponde a un estudiante de primaria")
-
     def obtener_informacion(self):
         return f"{super().obtener_informacion()}, Grado: {self.grado}, Jornada: {self.jornada}"
 
@@ -159,24 +169,6 @@ class EstudianteSecundaria(Alumno):
     @staticmethod
     def es_secundaria():
         return True
-
-    @classmethod
-    def crear_estudiante(cls, _nombre, _apellido, _edad, _sexo, _telefono, _grado, _jornada, _pae, _transporte, media):
-        if _grado in ["6", "7", "8", "9", "10", "11"]:
-            return cls(
-                _nombre=_nombre,
-                _apellido=_apellido,
-                _edad=_edad,
-                _sexo=_sexo,
-                _telefono=_telefono,
-                _grado=_grado,
-                _jornada=_jornada,
-                _pae=_pae,
-                _transporte=_transporte,
-                media=media
-            )
-        else:
-            raise ValueError("El grado no corresponde a un estudiante de secundaria")
 
     def obtener_informacion(self):
         return f"{super().obtener_informacion()}, Grado: {self.grado}, Jornada: {self.jornada}, Media: {self.media}"

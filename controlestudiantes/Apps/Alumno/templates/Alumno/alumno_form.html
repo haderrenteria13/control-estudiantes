@@ -1,15 +1,74 @@
-{% extends 'Alumno/base.html' %}
-{% block content %}
-    {% if request.path == '/new' %} <h1>Agregar Alumno</h1> {% else %} <h1>Editar a {{ alumno_form.instance.nombre }} </h1> {% endif %}
-
-    <form method="POST">
-        {% csrf_token %}
-        {{ alumno_form.as_p }}
-        {% if alumno_form.non_field_errors %}
-            <div class="alert alert-danger">
-                {{ alumno_form.non_field_errors }}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Estudiantes | Alumnos</title>
+    <!-- Link Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Link Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static "Alumno/css/styles.css" %}">
+</head>
+<body>
+    <!-- Barra de navegacion -->
+    <nav class="navbar bg-body-tertiary px-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold">Control de Estudiantes</a>
+            <div class="d-flex gap-2">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      {{ user.username }}
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Salir <i class="bi bi-box-arrow-right"></i></a></li>
+                    </ul>
+                </div>
             </div>
-        {% endif %}
-        <button type="submit" class="btn btn-primary">Guardar Alumno</button>
-    </form>
-{% endblock %}
+        </div>
+    </nav>
+
+    <header class="container">
+        {% if request.path == '/new' %} <h1>Agregar Alumno</h1> {% else %} <h1>Editar a {{ alumno_form.instance.nombre }} </h1> {% endif %}
+    
+        <form method="POST">
+            {% csrf_token %}
+            {{ alumno_form.as_p }}
+            <input type="hidden" name="next" value="{{ next }}">
+            {% if alumno_form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ alumno_form.non_field_errors }}
+                </div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Guardar Alumno</button>
+        </form>
+    </header>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var gradoField = document.querySelector('.field-grado');
+            var mediaField = document.querySelector('.field-media');
+            var tipoAlumnoField = document.getElementById('id_tipo_alumno');
+
+            function toggleMediaField() {
+                var gradoValue = gradoField.value;
+                if (['10', '11'].includes(gradoValue)) {
+                    mediaField.style.display = 'block';
+                    tipoAlumnoField.value = 'secundaria';
+                } else {
+                    mediaField.style.display = 'none';
+                    tipoAlumnoField.value = 'primaria';
+                }
+            }
+
+            gradoField.addEventListener('change', toggleMediaField);
+            toggleMediaField();  // Ejecutar al cargar la página
+        });
+    </script>
+
+    <!-- Link BootstrapJS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="{% static "Alumno/js/scripts.js" %}"></script>
+</body>
+</html>
