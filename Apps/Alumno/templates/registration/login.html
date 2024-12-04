@@ -1,0 +1,28 @@
+{% extends 'Alumno/base.html' %}
+
+{% block login %}
+    <div class="row container d-flex flex-column justify-content-center align-items-center"> 
+    {% if form.errors %}
+    <div class="col-lg-4 p-0">
+        <div class="alert alert-danger shadow"><p>Tu usuario o contraseña son incorrectos, por favor intenta de nuevo.</p></div>
+    </div>
+    {% endif %}
+    <div class="col-lg-4 card shadow p-3">
+        <form action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Nombre de Usuario</label>
+            <input placeholder="Aqui tu usuario" type="text" name="username" id="username" class="form-control" value="{{ form.username.value|default_if_none:'' }}" >
+            <div id="emailHelp" class="form-text">Nunca compartiremos tu usuario con nadie más.</div>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Contraseña</label>
+            <input placeholder="Aqui tu contraseña" type="password" name="password" id="password" class="form-control" value="{{ form.password.value|default_if_none:'' }}">
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Ingresar</button>
+        </div>
+        </form>
+    </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'Alumno/base.html' %}
+
+{% block content %}
+<header class="mt-2">
+    <form method="POST">
+        {% csrf_token %}
+        {{ alumno_form.as_p }}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% if alumno_form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ alumno_form.non_field_errors }}
+            </div>
+        {% endif %}
+        <div class="d-flex gap-1">
+            <a href="{{ next }}" class="btn btn-primary"><i class="bi bi-arrow-left-short" aria-label="volver"></i></a>
+            <button type="submit" class="btn btn-primary">Guardar Alumno</button>
+        </div>
+    </form>
+</header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var gradoField = document.querySelector('.field-grado');
+        var mediaField = document.querySelector('.field-media');
+        var tipoMediaField = document.querySelector('.field-tipo-de-media');
+        var tipoAlumnoField = document.getElementById('id_tipo_alumno');
+
+        function toggleMediaFields() {
+            var gradoValue = gradoField.value;
+            if (['10', '11'].includes(gradoValue)) {
+                mediaField.style.display = 'block';
+                tipoMediaField.style.display = 'block';
+                tipoAlumnoField.value = 'secundaria';
+            } else {
+                mediaField.style.display = 'none';
+                tipoMediaField.style.display = 'none';
+                tipoAlumnoField.value = 'primaria';
+            }
+        }
+
+        gradoField.addEventListener('change', toggleMediaFields);
+        toggleMediaFields();  // Ejecutar al cargar la página
+    });
+</script>
+{% endblock %}
+

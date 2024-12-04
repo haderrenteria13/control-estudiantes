@@ -1,0 +1,98 @@
+{% extends 'Alumno/base.html' %}
+{% block content %}
+    <section class="my-3">
+        <div class="d-flex gap-2">
+            <a type="button" class="btn btn-primary" href="{% url "inicio" %}">
+                <i class="bi bi-person-fill"></i> Numero de Estudiantes <span class="badge text-bg-secondary">{{ total_estudiantes }}</span>
+            </a>
+            <a type="button" class="btn btn-primary" href="{% url "inicio_primaria" %}">
+                <i class="bi bi-person-fill"></i> Estudiantes de Primaria <span class="badge text-bg-secondary">{{ total_estudiantes_primaria }}</span>
+            </a>
+            <a type="button" class="btn btn-primary" href="{% url "inicio_secundaria" %}">
+                <i class="bi bi-person-fill"></i> Estudiantes de Secundaria <span class="badge text-bg-secondary">{{ total_estudiantes_secundaria }}</span>
+            </a>
+        </div>
+    </section>
+    <hr>
+    <div class="d-flex justify-content-between align-items-center my-4">
+        <h1 class="fw-semibold">Lista de Alumnos Primaria</h1>
+        <a class="btn btn-primary shadow fw-medium" href="{% url 'alumno_new' %}?next={% url 'inicio_primaria' %}"><i class="bi bi-person-plus-fill"></i> Agregar Alumnos</a>
+    </div>
+    <table class="table table-dark mt-4">
+        <thead>
+            <tr>
+                <th class="fw-medium">Nombre</th>
+                <th class="fw-medium">Edad</th>
+                <th class="fw-medium">Sexo</th>
+                <th class="fw-medium">Teléfono</th>
+                <th class="fw-medium">Grado</th>
+                <th class="fw-medium">Jornada</th>
+                <th class="fw-medium">Pae</th>
+                <th class="fw-medium">Transporte</th>
+                <th class="fw-medium">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for alumno in estudiantes_primaria %}
+                <tr>
+                    <td class="fw-light">{{ alumno.nombre }} {{ alumno.apellido }}</td>
+                    <td class="fw-light">{{ alumno.edad }}</td>
+                    <td class="fw-light">{{ alumno.sexo }}</td>
+                    <td class="fw-light">{{ alumno.telefono }}</td>
+                    <td class="fw-light">{{ alumno.grado }}</td>
+                    <td class="fw-light">{{ alumno.jornada }}</td>
+                    <td class="fw-light">{{ alumno.pae|yesno:"Sí,No" }}</td>
+                    <td class="fw-light">{{ alumno.transporte|yesno:"Sí,No" }}</td>
+                    <td>
+                        <a href="{% url 'alumno_update' alumno.etapa alumno.id %}?next={% url 'inicio_primaria' %}" class="me-2" aria-label="Editar"><i class="bi bi-pencil-fill"></i></a>
+                        <a class="" data-bs-toggle="modal" data-bs-target="#ModalDelete" data-id="{{ alumno.id }}" role="button" aria-label="Borrar"><i class="bi bi-trash-fill"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="ModalDelete" aria-hidden="true" aria-labelledby="ModalDeleteLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="ModalDeleteLabel">Eliminar Alumno</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ¿Estás seguro de que deseas eliminar este alumno?
+            </div>
+            <div class="modal-footer">
+              <a id="delete-confirm" href="#" class="btn btn-danger">Eliminar</a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <p class="d-inline-flex gap-1">
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+          Mostrar Info
+        </a>
+    </p>
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+            <h1>Información</h1>
+            <p>Esta es la información de los alumnos de primaria</p>
+            {% for alumno in estudiantes_primaria %}
+                <tr>
+                    <td class="fw-light">{{ alumno.obtener_informacion }}</td>
+                </tr>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        var ModalDelete = document.getElementById('ModalDelete');
+        ModalDelete.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var alumnoId = button.getAttribute('data-id');
+            var deleteConfirm = ModalDelete.querySelector('#delete-confirm');
+            deleteConfirm.href = '{% url "alumno_delete" 0 %}'.replace('0', alumnoId);
+        });
+    </script>
+{% endblock %}

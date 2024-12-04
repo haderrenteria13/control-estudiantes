@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Estudiantes | Alumnos</title>
+    <!-- Link Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Link Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static "Alumno/css/styles.css" %}">
+    <style>
+        body[data-bs-theme="dark"] {
+            background-color: #121212;
+            color: #ffffff;
+        }
+        body[data-bs-theme="light"] {
+            background-color: #ffffff;
+            color: #000000;
+        }
+    </style>
+</head>
+<body class="bg-body-tertiary">
+    <!-- Barra de navegacion -->
+    {% if request.path == '/accounts/login/' %}
+    {% else %}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4">
+                {% if request.path == '/new/' %}
+                    Agregar un Alumno
+                {% elif '/edit/' in request.path %}
+                    Editar a {{ alumno_form.instance.nombre }}
+                {% else %}
+                    Control de Estudiantes
+                {% endif %}
+            </a>
+                <div class="d-flex gap-2">
+                    {% if request.path == '/new/' %}
+                        <a class="btn btn-primary" href="{% url 'inicio' %}?next={{ request.path }}"><i class="bi bi-arrow-left-short"></i> Inicio</a>
+                    {% elif '/edit/' in request.path %}
+                        <a class="btn btn-primary" href="{% url 'inicio' %}"><i class="bi bi-arrow-left-short"></i> Inicio</a>
+                    {% else %}
+                        <form method="GET" action="{% url 'inicio' %}">
+                            <div class="input-group">
+                                <input type="text" name="q" class="form-control" placeholder="Buscar por nombre o apellido" value="{{ query | default_if_none:'' }}">
+                                <button type="submit" class="btn btn-primary">Buscar</button>
+                            </div>
+                        </form>
+                    {% endif %}
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ user.username }}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Salir <i class="bi bi-box-arrow-right"></i></a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="theme-icon">
+                            <i class="bi bi-circle-half" aria-label="color"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item theme-toggle" href="#" data-theme="dark"><i class="bi bi-moon-stars-fill"></i> Oscuro</a></li>
+                            <li><a class="dropdown-item theme-toggle" href="#" data-theme="light"><i class="bi bi-sun-fill"></i> Claro</a></li>
+                            <li><a class="dropdown-item theme-toggle" href="#" data-theme="auto"><i class="bi bi-circle-half"></i> Auto</a></li>
+                        </ul>
+                    </div>
+                </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <!-- Contenido -->
+    {% if request.path == '/accounts/login/' %}
+    <header class="d-flex justify-content-center align-items-center vh-100">
+        {% block login %}
+        {% endblock %}
+    </header>
+    {% else %}
+    <header class="container">
+        {% block content %}
+        {% endblock %}
+    </header>
+    {% endif %}
+
+    <!-- Link BootstrapJS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="{% static "Alumno/js/scripts.js" %}"></script>
+    <script>
+        function setTheme(theme) {
+            if (theme === 'auto') {
+                document.documentElement.removeAttribute('data-bs-theme');
+                localStorage.removeItem('theme');
+            } else {
+                document.documentElement.setAttribute('data-bs-theme', theme);
+                localStorage.setItem('theme', theme);
+            }
+            updateThemeIcon(theme);
+        }
+
+        function updateThemeIcon(theme) {
+            const themeIcon = document.getElementById('theme-icon').querySelector('i');
+            if (theme === 'light') {
+                themeIcon.className = 'bi bi-sun-fill';
+            } else if (theme === 'dark') {
+                themeIcon.className = 'bi bi-moon-stars-fill';
+            } else {
+                themeIcon.className = 'bi bi-circle-half';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const savedTheme = localStorage.getItem('theme') || 'auto';
+            setTheme(savedTheme);
+        });
+
+        document.querySelectorAll('.theme-toggle').forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                const newTheme = button.getAttribute('data-theme');
+                setTheme(newTheme);
+            });
+        });
+    </script>
+</body>
+</html>
