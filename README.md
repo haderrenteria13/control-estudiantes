@@ -14,7 +14,7 @@ Este proyecto es una aplicación web para gestionar estudiantes de primaria y se
 
 1. Clona el repositorio:
     ```bash
-    git clone https://github.com/tu-usuario/control-estudiantes-django.git
+    git clone https://github.com/haderrenteria13/control-estudiantes-django.git
     cd control-estudiantes
     ```
 
